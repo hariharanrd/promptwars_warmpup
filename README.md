@@ -4,19 +4,22 @@ SyncFlow is a high-fidelity, real-time task management dashboard designed for te
 
 ## 🚀 Features
 
-- **Real-Time Synchronization**: Powered by Firebase Firestore, ensuring all team members see updates instantly without page refreshes.
-- **Task Management**: Create, view, and track tasks with detailed status badges and metadata.
+- **Real-Time Task Synchronization**: Powered by Firebase Firestore, ensuring all team members see task updates, creations, and deletions instantly without page refreshes.
+- **Hackathon-Optimized Authentication**: A lightweight, frictionless sign-in system. Users join the workspace with a username and password which are stored directly in Firestore and managed via a global React Context.
+- **Team Directory**: A live, real-time list of all onboarded team members pulling dynamically from the Firestore users collection.
+- **Client-Side API Architecture**: Direct-to-database communication using Firebase client APIs (`onSnapshot`, `getDoc`, `setDoc`) eliminating the need for a complex middle-tier backend.
 - **Modern UI/UX**: Built with a "premium-first" design philosophy using Tailwind CSS, featuring glassmorphism, smooth transitions, and responsive layouts.
-- **Component-Driven Architecture**: Modular React components (TaskGrid, TaskForm, StatusBadge) for maintainability and scalability.
+- **Modular Navigation**: Instant client-side routing between Dashboard, Team, and Settings modules using React state.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: [React 18](https://reactjs.org/) with [Vite](https://vitejs.dev/) for ultra-fast builds and HMR.
+- **Frontend Core**: [React 18](https://reactjs.org/) with [Vite](https://vitejs.dev/) for ultra-fast builds and HMR.
+- **State Management**: React Context API for global authentication state and custom hooks (`useTasks`, `useAuth`).
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) for modern, utility-first styling.
-- **Backend/Real-time**: [Firebase Modular SDK](https://firebase.google.com/) (Firestore).
+- **Backend/Real-time**: [Firebase Modular SDK v11](https://firebase.google.com/) (Firestore specifically targeting the `promptwars` named database instance).
 - **Icons**: [Lucide React](https://lucide.dev/) for a clean and consistent icon set.
 - **Date Handling**: [date-fns](https://date-fns.org/) for robust date manipulation.
-- **Infrastructure**: [Docker](https://www.docker.com/) for containerized deployment.
+- **Infrastructure**: [Docker](https://www.docker.com/) for containerized deployment (Cloud Run ready).
 
 ## 📦 Getting Started
 
