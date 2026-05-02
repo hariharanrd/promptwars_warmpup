@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBSGZv8-xB2AH9Snq7dtHPjmi3SNZErHWA",
-  authDomain: "promptwarswarmpup.firebaseapp.com",
-  projectId: "promptwarswarmpup",
-  storageBucket: "promptwarswarmpup.firebasestorage.app",
-  messagingSenderId: "599051473410",
-  appId: "1:599051473410:web:d68499628cbe096adc8d1b",
-  measurementId: "G-6P9M6GR4H7"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
