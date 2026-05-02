@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckSquare, Users, Settings, LayoutDashboard, LogOut } from 'lucide-react';
+import { CheckSquare, Users, Settings, LayoutDashboard, LogOut, Video, FileText, Phone } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 export function Sidebar({ currentView, setCurrentView }) {
@@ -36,7 +36,7 @@ export function Sidebar({ currentView, setCurrentView }) {
         <h1 className="text-xl font-bold text-gray-800 tracking-tight">SyncFlow</h1>
       </div>
       
-      <nav className="flex-1 px-4 space-y-2">
+      <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
         <div onClick={() => setCurrentView('dashboard')} className={navItemClass('dashboard')}>
           <LayoutDashboard size={20} />
           <span>Dashboard</span>
@@ -45,6 +45,22 @@ export function Sidebar({ currentView, setCurrentView }) {
           <Users size={20} />
           <span>Team</span>
         </div>
+        
+        <div className="pt-4 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Workspace</div>
+        <div onClick={() => setCurrentView('meetings')} className={navItemClass('meetings')}>
+          <Video size={20} />
+          <span>Meetings</span>
+        </div>
+        <div onClick={() => setCurrentView('docs')} className={navItemClass('docs')}>
+          <FileText size={20} />
+          <span>Documents</span>
+        </div>
+        <div onClick={() => setCurrentView('calls')} className={navItemClass('calls')}>
+          <Phone size={20} />
+          <span>Calls</span>
+        </div>
+
+        <div className="pt-4 pb-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">System</div>
         <div onClick={() => setCurrentView('settings')} className={navItemClass('settings')}>
           <Settings size={20} />
           <span>Settings</span>

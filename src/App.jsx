@@ -6,6 +6,8 @@ import { TaskForm } from './components/TaskForm';
 import { Auth } from './components/Auth';
 import { Team } from './components/Team';
 import { Settings } from './components/Settings';
+import { PlaceholderView } from './components/PlaceholderView';
+import { Video, FileText, Phone } from 'lucide-react';
 import { useTasks } from './hooks/useTasks';
 import { useAuth } from './hooks/useAuth';
 import { SettingsProvider } from './context/SettingsContext';
@@ -33,6 +35,12 @@ function App() {
     switch (currentView) {
       case 'team':
         return <Team />;
+      case 'meetings':
+        return <PlaceholderView title="Meetings" icon={Video} description="Host high-quality video conferences and team huddles directly within SyncFlow." />;
+      case 'docs':
+        return <PlaceholderView title="Document Store" icon={FileText} description="Collaborate on documents, spreadsheets, and presentations in real-time." />;
+      case 'calls':
+        return <PlaceholderView title="Calls" icon={Phone} description="Secure audio and video calling for instant team communication." />;
       case 'settings':
         return <Settings />;
       case 'dashboard':
