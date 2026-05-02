@@ -9,8 +9,15 @@ export function useTasks() {
   useEffect(() => {
     const tasksCollection = collection(db, 'tasks');
     
+    // Fallback timeout in case Firestore fails to connect (e.g. not provisioned)
+    const timeoutId = setTimeout(() => {
+      setLoading(false);
+      console.warn("Firestore connection timeout. The database might not be provisioned or is unreachable.");
+    }, 5000);
+
     // Subscribe to real-time updates
     const unsubscribe = onSnapshot(tasksCollection, (snapshot) => {
+      clearTimeout(timeoutId);
       const tasksData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -18,11 +25,15 @@ export function useTasks() {
       setTasks(tasksData);
       setLoading(false);
     }, (error) => {
+      clearTimeout(timeoutId);
       console.error("Error fetching tasks:", error);
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(timeoutId);
+      unsubscribe();
+    };
   }, []);
 
   const addTask = async (taskData) => {
