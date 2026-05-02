@@ -22,9 +22,10 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  const logIn = async (username) => {
+  const logIn = async (username, password) => {
     const userId = username.toLowerCase().replace(/[^a-z0-9]/g, '');
     if (!userId) throw new Error("Please enter a valid username");
+    if (!password) throw new Error("Please enter a password");
 
     const userRef = doc(db, 'users', userId);
     
@@ -33,11 +34,26 @@ export function AuthProvider({ children }) {
     const userData = {
       uid: userId,
       email: username,
+      password: password, // Note: Storing plaintext password for hackathon simplicity
       createdAt: new Date().toISOString()
     };
 
     if (!userSnap.exists()) {
       await setDoc(userRef, userData);
+    } else {
+      // Verify password
+      const existingData = userSnap.data();
+      if (existingData.password && existingData.password !== password) {
+        throw new Error("Incorrect password for this username.");
+      }
+      // If the existing user doesn't have a password (from previous version without password), we just let them in.
+      // Alternatively, we could update their record with the new password.
+      if (!existingData.password) {
+        await setDoc(userRef, { password: password }, { merge: true });
+        userData.createdAt = existingData.createdAt || userData.createdAt;
+      } else {
+        userData.createdAt = existingData.createdAt;
+      }
     }
 
     // Save to state and local storage immediately

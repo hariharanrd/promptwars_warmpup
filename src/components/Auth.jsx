@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 
 export function Auth() {
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { logIn } = useAuth();
@@ -14,7 +15,7 @@ export function Auth() {
     setLoading(true);
     
     try {
-      await logIn(username);
+      await logIn(username, password);
     } catch (err) {
       console.error(err);
       setError(err.message || 'Failed to authenticate');
@@ -34,7 +35,7 @@ export function Auth() {
             Join Workspace
           </h2>
           <p className="text-gray-500 mt-2 text-sm text-center">
-            Enter your name to join the real-time team dashboard.
+            Enter your name and a password to join the dashboard.
           </p>
         </div>
 
@@ -57,9 +58,21 @@ export function Auth() {
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              placeholder="Enter a secure password"
+            />
+          </div>
+
           <button
             type="submit"
-            disabled={loading || !username.trim()}
+            disabled={loading || !username.trim() || !password.trim()}
             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition-colors shadow-sm disabled:opacity-70 flex justify-center"
           >
             {loading ? (
