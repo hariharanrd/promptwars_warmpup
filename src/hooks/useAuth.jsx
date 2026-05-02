@@ -4,6 +4,14 @@ import { db } from '../firebase';
 
 const AuthContext = createContext();
 
+async function hashPassword(password) {
+  const msgUint8 = new TextEncoder().encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,32 +35,37 @@ export function AuthProvider({ children }) {
     if (!userId) throw new Error("Please enter a valid username");
     if (!password) throw new Error("Please enter a password");
 
+    const hashedPassword = await hashPassword(password);
     const userRef = doc(db, 'users', userId);
     
     // Check if user exists, if not create
     const userSnap = await getDoc(userRef);
-    const userData = {
+    let userData = {
       uid: userId,
       email: username,
-      password: password, // Note: Storing plaintext password for hackathon simplicity
+      password: hashedPassword,
       createdAt: new Date().toISOString()
     };
 
     if (!userSnap.exists()) {
       await setDoc(userRef, userData);
     } else {
-      // Verify password
       const existingData = userSnap.data();
-      if (existingData.password && existingData.password !== password) {
-        throw new Error("Incorrect password for this username.");
-      }
-      // If the existing user doesn't have a password (from previous version without password), we just let them in.
-      // Alternatively, we could update their record with the new password.
-      if (!existingData.password) {
-        await setDoc(userRef, { password: password }, { merge: true });
+      
+      // Migration & Verification logic
+      if (existingData.password === password) {
+        // Plaintext match -> Migrate to hash
+        await setDoc(userRef, { password: hashedPassword }, { merge: true });
+        userData.createdAt = existingData.createdAt;
+      } else if (existingData.password === hashedPassword) {
+        // Hash match
+        userData.createdAt = existingData.createdAt;
+      } else if (!existingData.password) {
+        // No password stored -> Set hash
+        await setDoc(userRef, { password: hashedPassword }, { merge: true });
         userData.createdAt = existingData.createdAt || userData.createdAt;
       } else {
-        userData.createdAt = existingData.createdAt;
+        throw new Error("Incorrect password for this username.");
       }
     }
 

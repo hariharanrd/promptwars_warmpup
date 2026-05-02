@@ -143,13 +143,21 @@ export function ChatWindow() {
             }`}
           >
             <div className={`flex items-center space-x-2 ${isMaximized ? 'max-w-4xl mx-auto' : ''}`}>
-              <input
-                type="text"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Type a message..."
-                className="flex-1 bg-slate-100 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 transition-all outline-none"
-              />
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={newMessage}
+                  maxLength={500}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Type a message..."
+                  className="w-full bg-slate-100 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 transition-all outline-none"
+                />
+                {newMessage.length > 400 && (
+                  <span className="absolute right-2 -top-6 text-[10px] text-slate-400">
+                    {newMessage.length}/500
+                  </span>
+                )}
+              </div>
               <button 
                 type="submit"
                 disabled={!newMessage.trim()}

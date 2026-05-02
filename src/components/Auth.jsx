@@ -51,11 +51,13 @@ export function Auth() {
             <input
               type="text"
               required
+              maxLength={30}
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9 ]/g, ''))}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
               placeholder="e.g. John Doe"
             />
+            <p className="text-[10px] text-gray-400 mt-1">Alphanumeric characters only, max 30.</p>
           </div>
 
           <div>
@@ -63,6 +65,7 @@ export function Auth() {
             <input
               type="password"
               required
+              maxLength={100}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"

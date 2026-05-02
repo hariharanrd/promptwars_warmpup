@@ -6,6 +6,7 @@ import { useSettings } from '../context/SettingsContext';
 export function TaskForm({ isOpen, onClose }) {
   const { addTask } = useTasks();
   const { statuses } = useSettings();
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     owner: '',
@@ -18,9 +19,21 @@ export function TaskForm({ isOpen, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await addTask(formData);
-    setFormData({ title: '', owner: '', startDate: '', dueDate: '', status: statuses[0] || 'To Do' });
-    onClose();
+    setError('');
+
+    // Date validation
+    if (new Date(formData.dueDate) < new Date(formData.startDate)) {
+      setError('Due date cannot be before start date.');
+      return;
+    }
+
+    try {
+      await addTask(formData);
+      setFormData({ title: '', owner: '', startDate: '', dueDate: '', status: statuses[0] || 'To Do' });
+      onClose();
+    } catch (err) {
+      setError('Failed to create task. Please try again.');
+    }
   };
 
   const handleChange = (e) => {
@@ -37,6 +50,12 @@ export function TaskForm({ isOpen, onClose }) {
             <X size={20} />
           </button>
         </div>
+
+        {error && (
+          <div className="px-6 py-3 bg-red-50 text-red-600 text-sm border-b border-red-100">
+            {error}
+          </div>
+        )}
         
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
@@ -45,6 +64,7 @@ export function TaskForm({ isOpen, onClose }) {
               type="text"
               name="title"
               required
+              maxLength={100}
               value={formData.title}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
@@ -58,6 +78,7 @@ export function TaskForm({ isOpen, onClose }) {
               type="text"
               name="owner"
               required
+              maxLength={100}
               value={formData.owner}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
