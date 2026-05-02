@@ -10,9 +10,16 @@ RUN npm run build
 FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
-# Cloud Run requires the container to listen on the port defined by the PORT environment variable
-# Nginx default is 80, we change it to 8080 which is the Cloud Run default
-RUN sed -i 's/listen  80;/listen 8080;/g' /etc/nginx/conf.d/default.conf
+# Create a custom nginx config to handle SPA routing and listen on 8080
+# Cloud Run expects the app to listen on 8080 by default
+RUN echo 'server { \
+    listen 8080; \
+    location / { \
+        root /usr/share/nginx/html; \
+        index index.html; \
+        try_files $uri $uri/ /index.html; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
 
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
