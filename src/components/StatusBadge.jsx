@@ -1,8 +1,10 @@
 import React from 'react';
 
-const statuses = ['To Do', 'In Progress', 'Done'];
+import { useSettings } from '../context/SettingsContext';
 
 export function StatusBadge({ status, onStatusChange }) {
+  const { statuses } = useSettings();
+
   const getStatusColor = (currentStatus) => {
     switch (currentStatus) {
       case 'To Do':
@@ -12,12 +14,13 @@ export function StatusBadge({ status, onStatusChange }) {
       case 'Done':
         return 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200';
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border-indigo-200';
     }
   };
 
   const cycleStatus = (e) => {
     e.stopPropagation();
+    if (statuses.length === 0) return;
     const currentIndex = statuses.indexOf(status);
     const nextIndex = (currentIndex + 1) % statuses.length;
     onStatusChange(statuses[nextIndex]);

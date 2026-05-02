@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { useTasks } from '../hooks/useTasks';
+import { useSettings } from '../context/SettingsContext';
 
 export function TaskForm({ isOpen, onClose }) {
   const { addTask } = useTasks();
+  const { statuses } = useSettings();
   const [formData, setFormData] = useState({
     title: '',
     owner: '',
     startDate: '',
     dueDate: '',
-    status: 'To Do'
+    status: statuses[0] || 'To Do'
   });
 
   if (!isOpen) return null;
@@ -17,7 +19,7 @@ export function TaskForm({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await addTask(formData);
-    setFormData({ title: '', owner: '', startDate: '', dueDate: '', status: 'To Do' });
+    setFormData({ title: '', owner: '', startDate: '', dueDate: '', status: statuses[0] || 'To Do' });
     onClose();
   };
 
@@ -96,9 +98,9 @@ export function TaskForm({ isOpen, onClose }) {
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-white"
             >
-              <option value="To Do">To Do</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
+              {statuses.map((status) => (
+                <option key={status} value={status}>{status}</option>
+              ))}
             </select>
           </div>
 

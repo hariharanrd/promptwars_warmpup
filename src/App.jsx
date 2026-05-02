@@ -8,6 +8,8 @@ import { Team } from './components/Team';
 import { Settings } from './components/Settings';
 import { useTasks } from './hooks/useTasks';
 import { useAuth } from './hooks/useAuth';
+import { SettingsProvider } from './context/SettingsContext';
+import { ChatWindow } from './components/ChatWindow';
 
 function App() {
   const [currentView, setCurrentView] = useState('dashboard');
@@ -50,21 +52,24 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans">
-      <Sidebar currentView={currentView} setCurrentView={setCurrentView} />
-      
-      <div className="flex-1 flex flex-col">
-        <TopBar onNewTask={() => setIsFormOpen(true)} />
+    <SettingsProvider>
+      <div className="min-h-screen bg-[#F8FAFC] font-sans">
+        <Sidebar currentView={currentView} setCurrentView={setCurrentView} />
         
-        <main className="flex-1 p-8 ml-64">
-          <div className="max-w-7xl mx-auto">
-            {renderContent()}
-          </div>
-        </main>
-      </div>
+        <div className="flex-1 flex flex-col">
+          <TopBar onNewTask={() => setIsFormOpen(true)} />
+          
+          <main className="flex-1 p-8 ml-64">
+            <div className="max-w-7xl mx-auto">
+              {renderContent()}
+            </div>
+          </main>
+        </div>
 
-      <TaskForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
-    </div>
+        <TaskForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
+        <ChatWindow />
+      </div>
+    </SettingsProvider>
   );
 }
 
